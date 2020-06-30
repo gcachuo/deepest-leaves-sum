@@ -2,7 +2,6 @@
 
 class Solution
 {
-    private $depth = 0;
     private $maxDepth = 0;
     public $sum;
 
@@ -16,22 +15,26 @@ class Solution
         return $this->sum;
     }
 
-    function sum($root)
+    function sum($root, $currentDepth = 0)
     {
         if ($root == null) {
             return null;
         } else {
-            $this->depth += 1;
+            $currentDepth += 1;
+            $root->depth = $currentDepth;
             if (!$root->right && !$root->left) {
-                if ($this->depth >= $this->maxDepth) {
-                    $this->maxDepth = $this->depth;
-                    $this->depth = 0;
+                if ($root->depth > $this->maxDepth) {
+                    $this->maxDepth = $currentDepth;
+                    $currentDepth = 0;
+                    $this->sum = 0;
+                }
+                if ($root->depth == $this->maxDepth) {
                     $this->sum += $root->val;
                 }
             }
-            $node = $this->sum($root->left);
+            $node = $this->sum($root->left, $currentDepth);
             if ($node == null) {
-                $node = $this->sum($root->right);
+                $node = $this->sum($root->right, $currentDepth);
             }
             return $node;
         }
@@ -47,6 +50,7 @@ class TreeNode
     public $val = null;
     public $left = null;
     public $right = null;
+    public $depth = 0;
 
     function __construct($val = 0, TreeNode $left = null, TreeNode $right = null)
     {
